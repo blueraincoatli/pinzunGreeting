@@ -99,8 +99,19 @@ const App: React.FC = () => {
 
     if (appState !== AppState.INTERACTIVE && appState !== AppState.FINALE) return;
 
-    const y = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    let y: number;
+    let x: number;
+
+    if ('touches' in e) {
+      // Touch event - use changedTouches for touchend
+      const touch = e.type === 'touchend' ? e.changedTouches[0] : e.touches[0];
+      y = touch.clientY;
+      x = touch.clientX;
+    } else {
+      // Mouse event
+      y = e.clientY;
+      x = e.clientX;
+    }
 
     if (e.type === 'touchstart' || e.type === 'mousedown') {
       swipeStartY.current = y;
