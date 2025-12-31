@@ -1,0 +1,7 @@
+{
+  "name": "pinzungreeting",
+  "assets": {
+    "directory": "./dist"
+  },
+  "compatibility_date": "2024-11-01"
+}
