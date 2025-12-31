@@ -7,7 +7,7 @@ export interface FireworksCanvasRef {
 }
 
 interface FireworksCanvasProps {
-  // Sound props removed
+  onExplodeSound: () => void;
 }
 
 const FireworksCanvas = forwardRef<FireworksCanvasRef, FireworksCanvasProps>((props, ref) => {
@@ -27,7 +27,10 @@ const FireworksCanvas = forwardRef<FireworksCanvasRef, FireworksCanvasProps>((pr
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    const engine = new FireworkEngine(canvas);
+    const engine = new FireworkEngine(
+      canvas,
+      props.onExplodeSound
+    );
     engineRef.current = engine;
 
     let animationId: number;
@@ -48,7 +51,7 @@ const FireworksCanvas = forwardRef<FireworksCanvasRef, FireworksCanvasProps>((pr
       cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [props.onExplodeSound]);
 
   return (
     <canvas 

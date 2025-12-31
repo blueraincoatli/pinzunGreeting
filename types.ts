@@ -1,5 +1,6 @@
 
 export enum AppState {
+  LANDING = 'LANDING',
   INTRO = 'INTRO',
   INTERACTIVE = 'INTERACTIVE',
   FINALE = 'FINALE'

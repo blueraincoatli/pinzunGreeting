@@ -17,14 +17,16 @@ export class FireworkEngine {
   private fireworks: Firework[] = [];
   private width: number;
   private height: number;
+  private onExplode: () => void;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement, onExplode: () => void) {
     this.canvas = canvas;
     const context = canvas.getContext('2d', { alpha: false });
     if (!context) throw new Error('Canvas context not found');
     this.ctx = context;
     this.width = canvas.width;
     this.height = canvas.height;
+    this.onExplode = onExplode;
   }
 
   public resize(w: number, h: number) {
@@ -49,10 +51,10 @@ export class FireworkEngine {
   }
 
   private createExplosion(firework: Firework) {
-    const count = 150 + Math.floor(Math.random() * 100);
+    const count = 160 + Math.floor(Math.random() * 100);
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const force = Math.random() * 10 + 2;
+      const force = Math.random() * 12 + 2;
       firework.particles.push({
         x: firework.x,
         y: firework.y,
@@ -60,12 +62,14 @@ export class FireworkEngine {
         vy: Math.sin(angle) * force,
         alpha: 1,
         color: firework.color,
-        size: Math.random() * 2.5 + 0.5,
-        friction: 0.95,
-        gravity: 0.18,
-        life: 0.008 + Math.random() * 0.015
+        size: Math.random() * 3 + 0.5,
+        friction: 0.94,
+        gravity: 0.2,
+        life: 0.007 + Math.random() * 0.015
       });
     }
+    // Trigger only the explosion sound
+    this.onExplode();
   }
 
   public updateAndDraw() {
@@ -85,11 +89,11 @@ export class FireworkEngine {
       if (!f.exploded) {
         f.y -= f.speed;
         this.ctx.beginPath();
-        const rocketGlow = this.ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, 10);
+        const rocketGlow = this.ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, 12);
         rocketGlow.addColorStop(0, f.color);
         rocketGlow.addColorStop(1, 'transparent');
         this.ctx.fillStyle = rocketGlow;
-        this.ctx.arc(f.x, f.y, 10, 0, Math.PI * 2);
+        this.ctx.arc(f.x, f.y, 12, 0, Math.PI * 2);
         this.ctx.fill();
 
         if (f.y <= f.targetY) {
@@ -114,10 +118,10 @@ export class FireworkEngine {
             this.ctx.fillStyle = `rgba(${this.hexToRgb(p.color)}, ${p.alpha})`;
             this.ctx.fill();
             
-            if (p.alpha > 0.5) {
+            if (p.alpha > 0.4) {
               this.ctx.beginPath();
-              this.ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
-              this.ctx.fillStyle = `rgba(${this.hexToRgb(p.color)}, ${p.alpha * 0.2})`;
+              this.ctx.arc(p.x, p.y, p.size * 5, 0, Math.PI * 2);
+              this.ctx.fillStyle = `rgba(${this.hexToRgb(p.color)}, ${p.alpha * 0.15})`;
               this.ctx.fill();
             }
           }
